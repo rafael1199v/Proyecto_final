@@ -32,16 +32,6 @@ class Usuario(Credenciales):
     def agregar_amigo(self, other) -> None:
         pass
 
-class Administrador(Credenciales):
-    def __init__(self, id: int, nombre_usuario: str, correo: str, contrasenha: str, nombre: str, edad: int, ubicacion: str, telefono: str, id_credenciales: int) -> None:
-        super().__init__(id, nombre_usuario, correo, contrasenha)
-
-        self.nombre = nombre
-        self.edad = edad
-        self.ubicacion = ubicacion
-        self.telefono = telefono
-        self.id_credenciales = id_credenciales
-
 
 class TipoPublicacion():
     def __init__(self, id: int, tema_publicacion: str, tipo_publicacion: str) -> None:
@@ -68,8 +58,6 @@ class Noticia(Usuario, TipoPublicacion):
         return self.fecha
     
 
-
-
 class Mensaje(Usuario):
 
     def __init__(self, id: int, contenido: str, fecha_publicacion: str, id_usuario_emisor: int, id_usuario_receptor: int) -> None:
@@ -79,7 +67,6 @@ class Mensaje(Usuario):
         self.contenido = contenido
         self.fecha_publicacion = fecha_publicacion
     
-    pass
 
 class Publicacion():
     def __init__(self, id: int, tamanho_publicacion: str, contenido: str, fecha: str, restriccion_solo_amigos: bool, id_usuario: int, id_tipo: int) -> None:

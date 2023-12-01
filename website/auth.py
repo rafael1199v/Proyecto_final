@@ -12,10 +12,18 @@ def login():
     
     return render_template("login.html")
 
-@auth.route("/logout")
+@auth.route("/noticias")
 def logout():
-    return "<h1> Hola </h1>"
+    return render_template("noticias.html")
 
-@auth.route("/sign-up")
+@auth.route("/registro")
 def sign_up():
-    return render_template("sign_up.html")
+    return render_template("registro.html")
+
+@auth.route("/publicaciones")
+def publicaciones():
+    return render_template("publicaciones.html")
+
+@auth.route("/mensajes")
+def mensajes():
+    return render_template("mensajes.html")

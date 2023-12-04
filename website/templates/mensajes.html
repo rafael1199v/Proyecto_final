@@ -3,9 +3,14 @@
 {% block content %}
 
 <h1>Mensajes disponibles</h1>
-
-{% for fila in filas %}
-    <h1>{{fila}}</h1>
-{% endfor %}
+<br>
+{% if mensajes_usuario %}
+    {% for fila in mensajes_usuario %}
+        <h1>Emitido por: {{ fila[1] }}</h1>
+        <p>Contenido: {{ fila[0] }}</p>
+    {% endfor %}
+{% else %}
+<h1>Usted no tiene ningun mensaje</h1>
+{% endif %}
 
 {% endblock %}

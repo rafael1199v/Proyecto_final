@@ -2,6 +2,11 @@
 
 {% block content %}
 <h1>Perfil del usuario</h1>
+<h4>Nombre del usuario: {{nombre}}</h4>
+<h4>Edad: {{edad}}</h4>
+<h4>Ubicacion: {{ubicacion}}</h4>
+<h4>Telefono: {{telefono}}</h4>
+
 <form action= "/cerrar_sesion" method="GET">
     <button type="submit" class="btn btn-primary">Cerrar Sesion</button>
 </form>

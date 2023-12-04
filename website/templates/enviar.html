@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block title %}Envia un mensaje{% endblock %}
+
+{% block content %}
+<h1>Hola</h1>
+
+
+<form action="/enviar" method="POST">
+    <select name="correos" id="correos">
+        {% for correo in personas %}
+            <option>{{correo[0]}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <textarea name="mensaje" id="mensaje" cols="100" rows="10">Escribe tu mensaje</textarea>
+    <br>
+    <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+</form>
+
+    
+{% endblock %}

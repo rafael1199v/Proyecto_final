@@ -1,3 +1,5 @@
+from .data import cursor
+
 class Credenciales():
     def __init__(self, id: int, nombre_usuario: str, correo: str, contrasenha: str) -> None:
         self.id = id
@@ -18,16 +20,24 @@ class Credenciales():
     def set_correo(self, nuevo_correo: str) -> None:
         self.correo = nuevo_correo
 
-class Usuario(Credenciales):
-    def __init__(self, id: int, nombre_usuario: str, correo: str, contrasenha: str, nombre: str, edad: int, ubicacion: str, telefono: str, id_credenciales: int) -> None:
-        super().__init__(id, nombre_usuario, correo, contrasenha)
 
+    def get_credenciales(correo: str, contrasenha: str) -> tuple:
+        cursor.execute("SELECT * FROM credenciales WHERE correo = :correo", {'correo': correo})
+        fila = cursor.fetchone()
+        return fila
+        
+
+
+class Usuario(Credenciales):
+    def __init__(self, id, nombre: str, edad: int, ubicacion: str, telefono: str, id_credenciales: int) -> None:
+        super().__init__(id_credenciales)
+
+        self.id = id
         self.nombre = nombre
         self.edad = edad
         self.ubicacion = ubicacion
         self.telefono = telefono
         self.id_credenciales = id_credenciales
-
 
     def agregar_amigo(self, other) -> None:
         pass
@@ -39,24 +49,6 @@ class TipoPublicacion():
         self.tema_publicacion = tema_publicacion
         self.tipo_publicacion = tipo_publicacion
 
-class Noticia(Usuario, TipoPublicacion):
-    def __init__(self, id: int, contenido: str, fecha: str, titular: str, fuente: str, id_usuario: int, id_tipo: int) -> None:
-        super.__init__(id_usuario, id_tipo)
-        self.id = id
-        self.contenido = contenido
-        self.fecha = fecha
-        self.titular = titular
-        self.fuente = fuente
-
-
-    def get_noticia(self) -> str:
-        return (f"{self.titular}\n"
-                f"{self.contenido}\n")
-    
-
-    def get_fecha(self) -> str:
-        return self.fecha
-    
 
 class Mensaje(Usuario):
 
@@ -67,19 +59,3 @@ class Mensaje(Usuario):
         self.contenido = contenido
         self.fecha_publicacion = fecha_publicacion
     
-
-class Publicacion():
-    def __init__(self, id: int, tamanho_publicacion: str, contenido: str, fecha: str, restriccion_solo_amigos: bool, id_usuario: int, id_tipo: int) -> None:
-        super.__init__(id_usuario, id_tipo)
-        self.id = id
-        self.tamanho_publicacion = tamanho_publicacion
-        self.contenido = contenido
-        self.fecha = fecha
-        self.restriccion_solo_amigos = restriccion_solo_amigos
-
-    def get_publicacion(self) -> str:
-        return (f"{self.contenido}\n")
-    
-
-    def get_fecha(self) -> str:
-        return self.fecha

@@ -95,14 +95,14 @@ def enviar():
         destinatario = request.form.get("correos")
         contenido = request.form.get("mensaje")
         
-        print(destinatario)
-        print(contenido)
-
-        id_usuario_receptor = Mensaje.get_usuario_receptor(destinatario)
-        id_usuario_emisor = int(session["user_id"])
+        if len(contenido) > 200:
+            flash("El contendo del mensaje excede los 200 caracteres" ,category="error")
+        else:
+            id_usuario_receptor = Mensaje.get_usuario_receptor(destinatario)
+            id_usuario_emisor = int(session["user_id"])
     
-        Mensaje.add_mensaje(contenido, id_usuario_emisor, id_usuario_receptor)
-        
+            Mensaje.add_mensaje(contenido, id_usuario_emisor, id_usuario_receptor)
+
     usuario_emisor = session["user_id"]
     personas = Mensaje.get_personas(usuario_emisor)
     return render_template("enviar.html", personas = personas)

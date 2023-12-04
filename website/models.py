@@ -123,3 +123,25 @@ class Mensaje(Usuario):
         
 
     
+    def get_personas(id_usuario_emisor) -> tuple:
+        cursor.execute("SELECT CORREO FROM CREDENCIALES WHERE ID <> :ID_E", {'ID_E': id_usuario_emisor})
+        filas = cursor.fetchall()
+        return filas
+    
+    def get_usuario_receptor(correo: str) -> int:
+        cursor.execute("SELECT ID FROM CREDENCIALES WHERE CORREO = :CORREO", {'CORREO': correo})
+        usuario_receptor = cursor.fetchone()
+        return int(usuario_receptor[0])
+    
+    def add_mensaje(contenido: str, id_usuario_emisor: int, id_usuario_receptor: int) -> None:
+
+
+        try:
+            cursor.execute("INSERT INTO MENSAJE (ID, CONTENIDO, ID_USUARIO_EMISOR, ID_USUARIO_RECEPTOR) VALUES (MENSAJE_SEQ.NEXTVAL, :CONTENIDO_U, :EMISOR_U, :RECEPTOR_U)",
+                       {'CONTENIDO_U': contenido, 'EMISOR_U': id_usuario_emisor, 'RECEPTOR_U': id_usuario_receptor})
+            
+            connection.commit()
+        except:
+
+            print("No se pudo enviar el mensaje")
+       

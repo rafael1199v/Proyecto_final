@@ -26,11 +26,6 @@ def login():
     
     return render_template("login.html")
 
-@auth.route("/noticias")
-def noticias():
-    return render_template("noticias.html")
-
-
 @auth.route("/cerrar_sesion", methods=["GET"])
 def cerrar_sesion():
     session.clear()
@@ -54,6 +49,10 @@ def registro():
             flash("Introduce un email de mas de 4 caracteres", category='error')
         elif edad < 10:
             flash("El usuario tiene que tener una edad mayor o igual a 10 años", category='error')
+        elif len(nombre_usuario) < 4:
+            flash("Se necesita un nombre de usuario mas largo", category='error')
+        elif len(telefono) != 8:
+            flash("Introduzca un numero de telefono valido", category='error')
         else:
 
             credeciales_usuario = Credenciales.verificar_nuevo_usuario(email)
@@ -77,9 +76,7 @@ def publicaciones():
 def mensajes():
 
     usuario_receptor = session["user_id"]
-
     mensajes_usuario = Mensaje.get_mensajes(usuario_receptor)
-    
     
     return render_template("mensajes.html", mensajes_usuario=mensajes_usuario)
 
@@ -90,20 +87,44 @@ def enviar():
     if "user_id" not in session:
        return redirect(url_for("login.html"))
     
-
     if request.method == "POST":
         destinatario = request.form.get("correos")
         contenido = request.form.get("mensaje")
         
         if len(contenido) > 200:
             flash("El contendo del mensaje excede los 200 caracteres" ,category="error")
+        elif len(contenido) == 0:
+            flash("La caja de texto esta vacia", category="error")
         else:
             id_usuario_receptor = Mensaje.get_usuario_receptor(destinatario)
             id_usuario_emisor = int(session["user_id"])
     
             Mensaje.add_mensaje(contenido, id_usuario_emisor, id_usuario_receptor)
+            flash("Mensaje enviado correctamente", category="success")
 
     usuario_emisor = session["user_id"]
     personas = Mensaje.get_personas(usuario_emisor)
     return render_template("enviar.html", personas = personas)
+
+@auth.route("/amigos", methods=["GET", "POST"])
+def amigos():
+
+    if "user_id" not in session:
+       return redirect(url_for("auth.login"))
+
+    id_usuario = session["user_id"]
+
+    if request.method == "POST":
+        nuevo_amigo = request.form.get("nuevo_amigo")
+        id_usuario_amigo = Usuario.get_id_nuevo_amigo(nuevo_amigo)
+        Usuario.add_amigo(id_usuario, id_usuario_amigo)
+
+        
+
     
+    amigos = Usuario.get_amigos(id_usuario)
+    numero_amigos = len(amigos)
+    posibles_amigos = Usuario.get_nuevas_personas(id_usuario)
+
+    
+    return render_template("amigos.html", amigos=amigos, numero_amigos=numero_amigos, posibles_amigos=posibles_amigos)

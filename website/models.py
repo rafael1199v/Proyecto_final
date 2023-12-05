@@ -1,4 +1,6 @@
 from .data import cursor, connection
+from datetime import datetime, timedelta
+import random
 
 class Credenciales():
     def __init__(self, id: int, nombre_usuario: str, correo: str, contrasenha: str) -> None:
@@ -72,8 +74,50 @@ class Usuario(Credenciales):
 
             print("No se pudo crear el nuevo usuario 2")
 
-    def agregar_amigo(self, other) -> None:
-        pass
+    def get_amigos(id_usuario: int) -> tuple:
+        cursor.execute("SELECT DISTINCT U.NOMBRE, A.FECHA_AMISTAD FROM USUARIO U, USUARIO_AMIGO A WHERE U.ID IN (SELECT ID_AMIGO FROM USUARIO_AMIGO WHERE ID_USUARIO = :ID_U) AND U.ID = A.ID_AMIGO AND A.ID_USUARIO = :ID_U",
+                       {'ID_U': id_usuario})
+        filas = cursor.fetchall()
+        return filas
+    
+    def get_nuevas_personas(id_usuario: int) -> tuple:
+        cursor.execute("SELECT C.CORREO FROM USUARIO U, CREDENCIALES C WHERE U.ID NOT IN (SELECT ID_AMIGO FROM USUARIO_AMIGO WHERE ID_USUARIO = :ID_U) AND U.ID_CREDENCIALES = C.ID AND U.ID <> :ID_U",
+                       {'ID_U': id_usuario})
+        
+        filas = cursor.fetchall()
+        return filas
+    
+    def get_id_nuevo_amigo(correo_amigo: str) -> int:
+        cursor.execute("SELECT ID FROM CREDENCIALES WHERE CORREO = :CORREO_AMIGO", {'CORREO_AMIGO': correo_amigo})
+        id_usuario_amigo = cursor.fetchone()
+        return int(id_usuario_amigo[0])
+    
+    def add_amigo(id_usuario: str, id_usuario_amigo) -> None:
+        try:
+            fecha_actual = datetime.now()
+
+        
+            fecha_amistad = fecha_actual - timedelta(days=random.randint(1, 365))
+
+        
+            fecha_amistad_str = fecha_amistad.strftime('%Y-%m-%d %H:%M:%S')
+
+
+            cursor.execute("INSERT INTO USUARIO_AMIGO (ID, ID_USUARIO, ID_AMIGO, FECHA_AMISTAD) VALUES (USUARIO_AMIGO_SEQ.NEXTVAL, :ID_USUARIO_U, :ID_AMIGO_U, TO_DATE(:FECHA_AMISTAD, 'YYYY-MM-DD HH24:MI:SS'))",
+                       {'ID_USUARIO_U': id_usuario, 'ID_AMIGO_U': id_usuario_amigo, 'FECHA_AMISTAD': fecha_amistad_str})
+            
+            connection.commit()
+            
+            cursor.execute("INSERT INTO USUARIO_AMIGO (ID, ID_USUARIO, ID_AMIGO, FECHA_AMISTAD) VALUES (USUARIO_AMIGO_SEQ.NEXTVAL, :ID_USUARIO_U, :ID_AMIGO_U, TO_DATE(:FECHA_AMISTAD, 'YYYY-MM-DD HH24:MI:SS'))",
+                       {'ID_USUARIO_U': id_usuario_amigo, 'ID_AMIGO_U': id_usuario, 'FECHA_AMISTAD': fecha_amistad_str})
+            
+            connection.commit()
+        except:
+
+            print("No se pudo agreagar al amigo")
+
+        
+        
 
 
 class TipoPublicacion():

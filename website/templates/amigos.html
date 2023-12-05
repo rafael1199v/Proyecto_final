@@ -1,0 +1,32 @@
+{% extends "base.html" %} {% block title %}Amigos{% endblock %}
+
+{% block content %}
+{% if amigos %}
+    <h1>Tienes una cantidad de {{ numero_amigos }} amigos</h1>
+    <br>
+    {% for amigo in amigos %}
+        <h1>{{ amigo[0] }}</h1>
+        <p>Fecha de inicio de amistad: {{ amigo[1] }}</p>
+    {% endfor %}
+{% else %}
+    <h1>Parece que no tienes ningun amigo</h1>
+{% endif %}
+
+<h1>Agregar Amigos</h1>
+<br>
+
+{% if posibles_amigos %}
+<form action="/amigos" method="POST">
+    <select name="nuevo_amigo" id="nuevo_amigo">
+        {% for posible_amigo in posibles_amigos %}
+            <option>{{posible_amigo[0]}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <br>
+    <button type="submit" class="btn btn-primary">Agregar Amigo</button>
+</form>
+{% else %}
+    <h1>No tienes ninguna sugerencia nueva</h1>
+{% endif %}
+{% endblock %}

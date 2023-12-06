@@ -1,5 +1,6 @@
 from flask import Flask
 
+#Crea los prefijos de rutas principales para el funcionamiento para la aplicacion
 def create_app():
     app = Flask(__name__)
     

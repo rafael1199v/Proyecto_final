@@ -1,4 +1,5 @@
-from .data import cursor, connection
+import oracledb
+from .data import cursor, connection_principal
 from datetime import datetime
 
 class Credenciales():
@@ -73,14 +74,16 @@ class Credenciales():
 
         Retorno: Ninguno
         """
+
         try:
             cursor.execute("INSERT INTO CREDENCIALES (ID, NOMBRE_USUARIO, CORREO, CONTRASENHA) VALUES(CREDENCIALES_SEQ.NEXTVAL, :NOMBRE_C, :CORREO_C, :CONTRASENHA_C)", 
-                        {'NOMBRE_C': nombre_usuario, 'CORREO_C': correo, 'CONTRASENHA_C': contrasenha})
-            
-            connection.commit()
-        except:
-            connection.rollback()
-            print("No se pudo crear el nuevo usuario 1")
+                                {'NOMBRE_C': nombre_usuario, 'CORREO_C': correo, 'CONTRASENHA_C': contrasenha})
+                    
+            connection_principal.commit()
+        except Exception as e:
+
+            connection_principal.rollback()
+            print("No se pudo crear el nuevo usuario 1", e)
         
 
 
@@ -139,15 +142,17 @@ class Usuario(Credenciales):
 
         Retorno: Ninguno
         """
-        try:
-            cursor.execute("INSERT INTO USUARIO (ID, NOMBRE, EDAD, UBICACION, TELEFONO, ID_CREDENCIALES) VALUES(USUARIO_SEQ.NEXTVAL, :NOMBRE_U, :EDAD_U, :UBICACION_U, :TELEFONO_U, USUARIO_SEQ.CURRVAL)", 
-                        {'NOMBRE_U': nombre, 'EDAD_U': edad, 'UBICACION_U': ubicacion, 'TELEFONO_U': telefono})
-            
-            connection.commit()
-        except:
 
-            connection.rollback()
-            print("No se pudo crear el nuevo usuario 2")
+        try:
+            with connection_principal.cursor() as cursor_modificador:
+                cursor_modificador.execute("INSERT INTO USUARIO (ID, NOMBRE, EDAD, UBICACION, TELEFONO, ID_CREDENCIALES) VALUES(USUARIO_SEQ.NEXTVAL, :NOMBRE_U, :EDAD_U, :UBICACION_U, :TELEFONO_U, USUARIO_SEQ.CURRVAL)", 
+                            {'NOMBRE_U': nombre, 'EDAD_U': edad, 'UBICACION_U': ubicacion, 'TELEFONO_U': telefono})
+                
+                connection_principal.commit()
+        except Exception as e:
+
+            connection_principal.rollback()
+            print("No se pudo crear el nuevo usuario 2", e)
 
     def get_amigos(id_usuario: int) -> list[tuple]:
         """Método que retorna todos los amigos de un usuario.
@@ -206,25 +211,25 @@ class Usuario(Credenciales):
         fecha_amistad_str: str = fecha_actual.strftime('%d/%m/%y')
         print("Actual", id_usuario, "Amigo", id_usuario_amigo, "fecha", fecha_amistad_str)
 
-        cursor_aux = connection.cursor()
+        
        
         try:
+
+            cursor_aux = connection_principal.cursor()
         
             cursor_aux.execute("INSERT INTO USUARIO_AMIGO (ID, ID_USUARIO, ID_AMIGO, FECHA_AMISTAD) VALUES (USUARIO_AMIGO_SEQ.NEXTVAL, :ID_USUARIO_U, :ID_AMIGO_U, TO_DATE(:FECHA_AMISTAD, 'DD/MM/YY'))",
                     {'ID_USUARIO_U': id_usuario, 'ID_AMIGO_U': id_usuario_amigo, 'FECHA_AMISTAD': fecha_amistad_str})
                 
-            connection.commit()
             cursor_aux.execute("INSERT INTO USUARIO_AMIGO (ID, ID_USUARIO, ID_AMIGO, FECHA_AMISTAD) VALUES (USUARIO_AMIGO_SEQ.NEXTVAL, :ID_USUARIO_U, :ID_AMIGO_U, TO_DATE(:FECHA_AMISTAD, 'DD/MM/YY'))",
                     {'ID_USUARIO_U': id_usuario_amigo, 'ID_AMIGO_U': id_usuario, 'FECHA_AMISTAD': fecha_amistad_str})
             
-            connection.commit()
-
-
-            connection.commit()
-        except:
+            connection_principal.commit()
 
             cursor_aux.close()
-            connection.rollback()
+        except:
+            cursor_aux.close()
+
+            connection_principal.rollback()
             print("No se pudo agreagar al amigo", id_usuario, id_usuario_amigo)
 
         
@@ -263,7 +268,7 @@ class Mensaje(Usuario):
         Retorno:
             list[tuple]: Todos los mensajes que ha recibido el usuario
         """
-        cursor.execute("SELECT M.CONTENIDO, U.NOMBRE FROM MENSAJE M, USUARIO U WHERE M.ID_USUARIO_EMISOR = U.ID AND M.ID_USUARIO_RECEPTOR = :ID_R", {'ID_R': id_usuario_receptor})
+        cursor.execute("SELECT M.CONTENIDO, U.NOMBRE FROM MENSAJE M, USUARIO U WHERE M.ID_USUARIO_EMISOR = U.ID AND M.ID_USUARIO_RECEPTOR = :ID_R ORDER BY  M.ID DESC", {'ID_R': id_usuario_receptor})
         filas: list[tuple] = cursor.fetchall()
 
         return filas
@@ -305,15 +310,16 @@ class Mensaje(Usuario):
         Retorno: Ninguno
         """
 
-        try:
-            cursor.execute("INSERT INTO MENSAJE (ID, CONTENIDO, ID_USUARIO_EMISOR, ID_USUARIO_RECEPTOR) VALUES (MENSAJE_SEQ.NEXTVAL, :CONTENIDO_U, :EMISOR_U, :RECEPTOR_U)",
-                       {'CONTENIDO_U': contenido, 'EMISOR_U': id_usuario_emisor, 'RECEPTOR_U': id_usuario_receptor})
-            
-            connection.commit()
-        except:
-
-            connection.rollback()
-            print("No se pudo enviar el mensaje")
+        with oracledb.connect(user='PROYECTO_FINAL', password='PROYECTO_FINAL', dsn='LAPTOP-LBCR930N/xe') as connection:
+            try:
+                with connection.cursor() as cursor_modificador:
+                    cursor_modificador.execute("INSERT INTO MENSAJE (ID, CONTENIDO, ID_USUARIO_EMISOR, ID_USUARIO_RECEPTOR) VALUES (MENSAJE_SEQ.NEXTVAL, :CONTENIDO_U, :EMISOR_U, :RECEPTOR_U)",
+                                            {'CONTENIDO_U': contenido, 'EMISOR_U': id_usuario_emisor, 'RECEPTOR_U': id_usuario_receptor})
+                
+                    connection.commit()
+            except Exception as e:
+                connection.rollback()
+                print("No se pudo enviar el mensaje", e)
         
 
 def get_noticias() -> list[tuple]:
@@ -355,4 +361,8 @@ def get_hashtags() -> list[tuple]:
     filas: list[tuple] = cursor.fetchall()
 
     return filas
+
+
+
+
        

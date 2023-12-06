@@ -2,5 +2,26 @@
 
 {% block content%}
 <h1>Pagina de publicaciones</h1>
+<br>
+<h2>Noticias</h2>
+<br>
+{% for noticia in noticias %}
+    <h3>Titular {{ noticia[0] }}</h3>
+    <h4>Publicado por: {{ noticia[1] }}</h4>
+    <h4>Fecha: {{ noticia[2] }}</h4>
+    <h6>{{ noticia[3] }}</h6>
+    <h5>Fuente: {{ noticia[4] }}</h5>
+    <h5>Tema: {{ noticia[5] }}</h5>
+    <br>
+{% endfor %}
 
+<h2>Otras publicaciones</h2>
+<br>
+{% for hashtag in hashtags %}
+    <h3>{{ hashtag[0] }}: {{ hashtag[1] }}</h3>
+    <h6>{{ hashtag[2] }}</h6>
+    <h6>#{{ hashtag[3] }}</h6>
+    <h5>Tema: {{ hashtag[4] }}</h5>
+    <br>
+{% endfor %}
 {% endblock %}

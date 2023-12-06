@@ -1,12 +1,15 @@
 from website import create_app
 from website.data import connection, cursor
 
+
 app = create_app()
-app.config['SECRET_KEY'] = 'tu_clave_secreta_aqui'
+app.config['SECRET_KEY'] = 'super_clave_secreta'
 
 if __name__ == "__main__":
 
-    app.run(debug=True)
+    try:
+        app.run(debug=True)
+    finally:
 
-    cursor.close()
-    connection.close()
+        cursor.close()
+        connection.close()

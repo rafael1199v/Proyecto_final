@@ -4,9 +4,9 @@
 {% if amigos %}
     <h1>Tienes una cantidad de {{ numero_amigos }} amigos</h1>
     <br>
-    {% for amigo in amigos %}
-        <h1>{{ amigo[0] }}</h1>
-        <p>Fecha de inicio de amistad: {{ amigo[1] }}</p>
+    {% for i in range(numero_amigos) %}
+        <h1>{{ amigos[i][0] }}</h1>
+        <p>Fecha de inicio de amistad: {{ fecha_amigos[i] }}</p>
     {% endfor %}
 {% else %}
     <h1>Parece que no tienes ningun amigo</h1>

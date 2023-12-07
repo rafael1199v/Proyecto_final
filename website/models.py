@@ -226,11 +226,11 @@ class Usuario(Credenciales):
             connection_principal.commit()
 
             cursor_aux.close()
-        except:
+        except Exception as e:
             cursor_aux.close()
 
             connection_principal.rollback()
-            print("No se pudo agreagar al amigo", id_usuario, id_usuario_amigo)
+            print("No se pudo agreagar al amigo", id_usuario, id_usuario_amigo, e)
 
         
 class Mensaje(Usuario):

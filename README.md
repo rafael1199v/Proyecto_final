@@ -1,6 +1,6 @@
 # Proyecto Final: UCB Social
 
-Este proyecto es una red socialque permite enviar mensajes, hacer amistades y ver publicaciones y noticias según sus temas.
+Este proyecto es una red social que permite enviar mensajes, hacer amistades y ver publicaciones y noticias según sus temas.
 
 ### Objetivo
 El objetivo de este proyecto es de explorar nuestros conocimientos en el lenguaje de programación Python y el manejo de bases de datos OracleDB en forma de un proyecto final para la universidad.

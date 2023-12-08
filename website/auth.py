@@ -125,7 +125,9 @@ def amigos():
     #Verificamos si algun usuario a iniciado sesion
     if "user_id" not in session:
        return redirect(url_for("auth.login"))
+    
 
+    #Obtenemos el id de la sesion actual
     id_usuario: int = session["user_id"]
 
     if request.method == "POST":

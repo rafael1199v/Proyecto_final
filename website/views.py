@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, session, redirect, url_for
 from .models import *
 views = Blueprint("views", __name__)
 
+#Ruta principal
 @views.route("/")
 def home():
 

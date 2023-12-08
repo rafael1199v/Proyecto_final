@@ -22,43 +22,43 @@ DROP SEQUENCE HASHTAG_PUBLICACION_SEQ;
 DROP SEQUENCE PUBLICACION_SEQ;
 
 
-create table USUARIO (
-    ID number(8) not null primary key,
-    NOMBRE varchar2(100) not null,
-    EDAD number(4) not null,
-    UBICACION varchar2(100),
-    TELEFONO varchar2(8) not null,
-    ID_CREDENCIALES number(8) not null
+CREATE TABLE USUARIO (
+    ID NUMBER(8) NOT NULL PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL,
+    EDAD NUMBER(4) NOT NULL,
+    UBICACION VARCHAR2(100),
+    TELEFONO VARCHAR2(8) NOT NULL,
+    ID_CREDENCIALES NUMBER(8) NOT NULL
 );
 
-create sequence USUARIO_SEQ increment by 1;
+CREATE SEQUENCE USUARIO_SEQ INCREMENT BY 1;
 
-create table CREDENCIALES (
-    ID number(8) not null primary key,
-    NOMBRE_USUARIO varchar2(50) not null,
-    CORREO varchar2(100) not null,
-    CONTRASENHA varchar2(50) not null
+CREATE TABLE CREDENCIALES (
+    ID NUMBER(8) NOT NULL PRIMARY KEY,
+    NOMBRE_USUARIO VARCHAR2(50) NOT NULL,
+    CORREO varchar2(100) NOT NULL,
+    CONTRASENHA varchar2(50) NOT NULL
 );
 
-create sequence CREDENCIALES_SEQ increment by 1;
+CREATE sequence CREDENCIALES_SEQ increment by 1;
 
-create table USUARIO_AMIGO (
-    ID number(8) not null primary key,
-    ID_USUARIO number(8) not null,
-    ID_AMIGO number(8) not null,
-    FECHA_AMISTAD date
+CREATE TABLE USUARIO_AMIGO (
+    ID number(8) NOT NULL PRIMARY KEY,
+    ID_USUARIO number(8) NOT NULL,
+    ID_AMIGO number(8) NOT NULL,
+    FECHA_AMISTAD DATE
 );
 
-create sequence USUARIO_AMIGO_SEQ increment by 1;
+CREATE sequence USUARIO_AMIGO_SEQ increment by 1;
 
-create table NOTICIA (
-    ID number(8) not null primary key,
-    TITULAR varchar2(100) not null,
-    FUENTE varchar2(100) not null,
-    ID_PUBLICACION number(8) not null
+CREATE TABLE NOTICIA (
+    ID number(8) NOT NULL PRIMARY KEY,
+    TITULAR varchar2(100) NOT NULL,
+    FUENTE varchar2(100) NOT NULL,
+    ID_PUBLICACION number(8) NOT NULL
 );
 
-create sequence NOTICIA_SEQ increment by 1;
+CREATE sequence NOTICIA_SEQ increment by 1;
 
 CREATE TABLE MENSAJE(
     ID NUMBER(8) NOT NULL PRIMARY KEY,
@@ -67,7 +67,7 @@ CREATE TABLE MENSAJE(
     ID_USUARIO_RECEPTOR NUMBER(8) NOT NULL
 );
 
-create sequence MENSAJE_SEQ increment by 1;
+CREATE sequence MENSAJE_SEQ increment by 1;
 
 CREATE TABLE LISTA_TEMAS (
     ID NUMBER(8) NOT NULL PRIMARY KEY,
